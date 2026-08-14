@@ -1,0 +1,6 @@
+Flask
+supabase
+python-dotenv
+Flask-WTF
+Pillow
+bcrypt
