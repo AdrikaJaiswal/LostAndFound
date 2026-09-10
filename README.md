@@ -12,26 +12,26 @@ Managing lost property on campus often relies on disorganized bulletin boards or
 
 ## Key Features & Architectural Modules:
 
-### 1. Authentication, Security & Core Backend (Developer 1)
+### 1. Authentication, Security & Core Backend
 * **11-Table Relational Schema:** Built on PostgreSQL (Supabase) with foreign keys, constraints, and optimized composite B-Tree indexes.
 * **Bcrypt Password Hashing:** Salted password encryption ensuring credentials are never stored in plain text.
 * **Role-Based Access Control (RBAC):** Custom decorators (`@login_required`, `@role_required`) protecting administrative and faculty verification routes.
 * **Media & File Validation:** Enforces MIME/header integrity, a 5 MB file cap, and a 5-image upload maximum using Pillow.
 * **Notification Engine:** Dispatches automated updates across status changes and claim reviews.
 
-### 2. Student & Public Module (Developer 2)
+### 2. Student & Public Module
 * Public-facing landing pages (Home, About, Contact).
 * Item reporting interface (`upload.html`) supporting multi-image uploads.
 * Student dashboard to track personal reports, claims, and status updates.
 * Claim submission modal collecting ownership descriptions and verification details.
 
-### 3. Faculty Verification Module (Developer 3)
+### 3. Faculty Verification Module
 * Multi-parameter Smart Search (filter by category, location, status, and date).
 * Item detail views with claim review queues.
 * Faculty claim approval and rejection workflows.
 * Formal return logging capturing receiver identification (Registration No, Phone, Department).
 
-### 4. Admin, Analytics & Reporting Module (Developer 4)
+### 4. Admin, Analytics & Reporting Module
 * Administrative control panel for user and category management.
 * Visual metrics dashboards (e.g., monthly item trends, return rates).
 * System activity logs tracking key platform actions for data auditability.
