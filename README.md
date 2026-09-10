@@ -112,7 +112,7 @@ Open http://127.0.0.1:5000 in your browser.
 
 | Role | Module | Focus Area |
 | :--- | :--- | :--- |
-| Developer 1 (Project Lead): Adrika Jaiswal | Backend Core & Database | DB Architecture, Auth, Sessions, RBAC Decorators, Media/Notification Services |
-| Developer 2: Shruthika Santhosh | Student & Public Module | Base Layouts, Upload Form, Claim Submission, Student Dashboard |
-| Developer 3: Prithvi Vijay | Faculty & Verification | Smart Search, Claim Approvals, Return Verification Logging |
-| Developer 4: Kashish Arora | Admin & Analytics | Dashboards, Category/User Management, Activity Logs, CSV/PDF Reports |
+| Adrika Jaiswal(Project Lead) | Backend Core & Database | DB Architecture, Auth, Sessions, RBAC Decorators, Media/Notification Services |
+| Shruthika Santhosh | Student & Public Module | Base Layouts, Upload Form, Claim Submission, Student Dashboard |
+| Prithvi Vijay | Faculty & Verification | Smart Search, Claim Approvals, Return Verification Logging |
+| Kashish Arora | Admin & Analytics | Dashboards, Category/User Management, Activity Logs, CSV/PDF Reports |
