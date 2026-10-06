@@ -12,6 +12,9 @@ app.register_blueprint(auth_bp)
 @app.route('/')
 def home():
     return render_template('home.html')
+@app.route('/login')
+def login_page():
+    return render_template('login.html')
 
 # TEST ROUTE: Anyone logged in
 @app.route('/api/profile')
