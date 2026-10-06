@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, session
+from flask import Flask, jsonify, session, render_template
 from config import supabase, SECRET_KEY
 from auth import auth_bp
 from decorators import login_required, role_required
@@ -11,15 +11,7 @@ app.register_blueprint(auth_bp)
 
 @app.route('/')
 def home():
-    try:
-        response = supabase.table('roles').select('*').execute()
-        return jsonify({
-            "status": "Success",
-            "message": "Connected to Supabase successfully!",
-            "roles": response.data
-        })
-    except Exception as e:
-        return jsonify({"status": "Error", "message": str(e)}), 500
+    return render_template('home.html')
 
 # TEST ROUTE: Anyone logged in
 @app.route('/api/profile')
