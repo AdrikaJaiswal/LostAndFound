@@ -14,7 +14,7 @@ def register():
         full_name = data.get('full_name')
         email = data.get('email')
         password = data.get('password')
-        role_name = data.get('role', 'Student')  # Default to Student
+        role_name = 'Student';  # Default to Student
         registration_no = data.get('registration_no')
         phone_number = data.get('phone_number')
         department = data.get('department')
