@@ -1,0 +1,399 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusFind | Admin Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #263238;
+        }
+
+        header {
+            background: #243447;
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        header h1 {
+            font-size: 24px;
+        }
+
+        header p {
+            margin-top: 5px;
+            color: #dce4ed;
+            font-size: 14px;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-size: 14px;
+        }
+
+        .logout {
+            background: #e74c3c;
+            color: white;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            margin-bottom: 18px;
+            font-size: 21px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 18px;
+            margin-bottom: 35px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 22px;
+            border-left: 5px solid #3978c5;
+            box-shadow: 0 2px 8px #0000000d;
+        }
+
+        .card p {
+            color: #687582;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .card h2 {
+            font-size: 30px;
+            color: #243447;
+        }
+
+        .panels {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 2px 8px #0000000d;
+        }
+
+        .panel h3 {
+            margin-bottom: 20px;
+        }
+
+        .bar-row {
+            margin: 18px 0;
+        }
+
+        .bar-label {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            font-size: 14px;
+            margin-bottom: 7px;
+        }
+
+        .bar-bg {
+            height: 12px;
+            background: #e9edf2;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .bar {
+            height: 100%;
+            width: 0;
+            background: #3978c5;
+            border-radius: 10px;
+            transition: width 0.4s;
+        }
+
+        .bar.green {
+            background: #27ae60;
+        }
+
+        .bar.orange {
+            background: #e69b28;
+        }
+
+        .bar.red {
+            background: #e74c3c;
+        }
+
+        #message {
+            margin-bottom: 20px;
+            color: #52616f;
+            font-size: 14px;
+        }
+
+        .refresh {
+            background: #3978c5;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #77818b;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div>
+            <h1>CampusFind Admin Dashboard</h1>
+            <p>Lost and Found Management System</p>
+        </div>
+        <button class="logout" onclick="logout()">Logout</button>
+    </header>
+
+    <main>
+        <h2 class="section-title">System Overview</h2>
+
+        <p id="message">Loading system statistics...</p>
+
+        <button class="refresh" onclick="loadStats()">Refresh Statistics</button>
+
+        <div class="cards">
+            <div class="card">
+                <p>Total Registered Users</p>
+                <h2 id="total_users">--</h2>
+            </div>
+
+            <div class="card">
+                <p>Lost Items</p>
+                <h2 id="lost_items">--</h2>
+            </div>
+
+            <div class="card">
+                <p>Found Items</p>
+                <h2 id="found_items">--</h2>
+            </div>
+
+            <div class="card">
+                <p>Total Claims</p>
+                <h2 id="total_claims">--</h2>
+            </div>
+
+            <div class="card">
+                <p>Pending Claims</p>
+                <h2 id="pending_claims">--</h2>
+            </div>
+
+            <div class="card">
+                <p>Items Returned</p>
+                <h2 id="returned_items">--</h2>
+            </div>
+        </div>
+
+        <h2 class="section-title">Item and Claim Analytics</h2>
+
+        <div class="panels">
+            <div class="panel">
+                <h3>Items by Status</h3>
+
+                <div class="bar-row">
+                    <div class="bar-label">
+                        <span>Available</span>
+                        <span id="available_value">0</span>
+                    </div>
+                    <div class="bar-bg">
+                        <div class="bar" id="available_bar"></div>
+                    </div>
+                </div>
+
+                <div class="bar-row">
+                    <div class="bar-label">
+                        <span>Claimed</span>
+                        <span id="claimed_value">0</span>
+                    </div>
+                    <div class="bar-bg">
+                        <div class="bar orange" id="claimed_bar"></div>
+                    </div>
+                </div>
+
+                <div class="bar-row">
+                    <div class="bar-label">
+                        <span>Returned</span>
+                        <span id="returned_value">0</span>
+                    </div>
+                    <div class="bar-bg">
+                        <div class="bar green" id="returned_bar"></div>
+                    </div>
+                </div>
+
+                <div class="bar-row">
+                    <div class="bar-label">
+                        <span>Archived</span>
+                        <span id="archived_value">0</span>
+                    </div>
+                    <div class="bar-bg">
+                        <div class="bar red" id="archived_bar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>Lost vs Found Items</h3>
+
+                <div class="bar-row">
+                    <div class="bar-label">
+                        <span>Lost Items</span>
+                        <span id="lost_value">0</span>
+                    </div>
+                    <div class="bar-bg">
+                        <div class="bar red" id="lost_bar"></div>
+                    </div>
+                </div>
+
+                <div class="bar-row">
+                    <div class="bar-label">
+                        <span>Found Items</span>
+                        <span id="found_value">0</span>
+                    </div>
+                    <div class="bar-bg">
+                        <div class="bar green" id="found_bar"></div>
+                    </div>
+                </div>
+
+                <p style="color:#687582;font-size:13px;margin-top:25px;">
+                    These indicators update using the current database counts.
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        CampusFind — Campus Lost and Found Management System
+    </footer>
+
+    <script>
+        async function loadStats() {
+            const message = document.getElementById("message");
+            message.textContent = "Loading system statistics...";
+
+            try {
+                const response = await fetch("/api/admin/system-stats");
+                const data = await response.json();
+
+                if (!response.ok || data.status !== "Success") {
+                    message.textContent =
+                        data.message || "Unable to load statistics.";
+                    return;
+                }
+
+                const stats = data.statistics;
+
+                document.getElementById("total_users").textContent =
+                    stats.total_users ?? 0;
+
+                document.getElementById("lost_items").textContent =
+                    stats.lost_items ?? 0;
+
+                document.getElementById("found_items").textContent =
+                    stats.found_items ?? 0;
+
+                document.getElementById("total_claims").textContent =
+                    stats.total_claims ?? 0;
+
+                document.getElementById("pending_claims").textContent =
+                    stats.pending_claims ?? 0;
+
+                document.getElementById("returned_items").textContent =
+                    stats.returned_items ?? 0;
+
+                const statuses = stats.items_by_status || {};
+                const statusNames = [
+                    "available", "claimed", "returned", "archived"
+                ];
+
+                const maxStatus = Math.max(
+                    1,
+                    ...statusNames.map(name => Number(statuses[name] || 0))
+                );
+
+                statusNames.forEach(name => {
+                    const count = Number(statuses[name] || 0);
+
+                    document.getElementById(name + "_value").textContent =
+                        count;
+
+                    document.getElementById(name + "_bar").style.width =
+                        (count / maxStatus * 100) + "%";
+                });
+
+                const maxType = Math.max(
+                    1,
+                    Number(stats.lost_items || 0),
+                    Number(stats.found_items || 0)
+                );
+
+                ["lost", "found"].forEach(name => {
+                    const count = Number(stats[name + "_items"] || 0);
+
+                    document.getElementById(name + "_value").textContent =
+                        count;
+
+                    document.getElementById(name + "_bar").style.width =
+                        (count / maxType * 100) + "%";
+                });
+
+                message.textContent =
+                    "Statistics loaded successfully from Supabase.";
+
+            } catch (error) {
+                console.error("Dashboard error:", error);
+                message.textContent =
+                    "Could not load statistics. Please refresh the page.";
+            }
+        }
+
+        async function logout() {
+            try {
+                const response = await fetch("/auth/logout", {
+                    method: "POST"
+                });
+
+                if (response.ok) {
+                    window.location.href = "/login";
+                } else {
+                    alert("Logout failed. Please try again.");
+                }
+            } catch (error) {
+                alert("Unable to connect to the server.");
+            }
+        }
+
+        loadStats();
+    </script>
+</body>
+</html>
