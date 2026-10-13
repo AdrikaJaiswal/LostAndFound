@@ -2,12 +2,16 @@ from flask import Flask, jsonify, session
 from config import supabase, SECRET_KEY
 from auth import auth_bp
 from decorators import login_required, role_required
+from routes.faculty import faculty_bp
+from routes.student import student_bp
 
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
 
 # Register Blueprints
 app.register_blueprint(auth_bp)
+app.register_blueprint(student_bp)
+app.register_blueprint(faculty_bp)
 
 @app.route('/')
 def home():
