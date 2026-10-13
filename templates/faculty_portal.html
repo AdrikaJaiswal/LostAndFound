@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Faculty &amp; Verification Portal</title>
+    <style>
+        :root { color-scheme: light; font-family: system-ui, sans-serif; color: #192b3a; background: #f3f6f8; }
+        body { margin: 0; }
+        header { padding: 1.25rem max(1rem, calc((100% - 1100px) / 2)); background: #173d56; color: white; }
+        header h1 { margin: 0 0 .35rem; font-size: 1.5rem; }
+        header p { margin: 0; color: #d5e6ef; }
+        nav, main { max-width: 1100px; margin: auto; padding: 1rem; }
+        nav { display: flex; flex-wrap: wrap; gap: .5rem; }
+        button, .button { border: 0; border-radius: .35rem; padding: .65rem .9rem; background: #176b87; color: white; cursor: pointer; font: inherit; text-decoration: none; }
+        button.secondary { background: #526b7a; }
+        button.danger { background: #a73838; }
+        button:disabled { opacity: .6; cursor: wait; }
+        .panel, .card { background: white; border: 1px solid #d9e2e8; border-radius: .5rem; padding: 1rem; margin-bottom: 1rem; }
+        .panel[hidden] { display: none; }
+        .card h3 { margin: 0 0 .5rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .8rem; }
+        label { display: block; font-weight: 600; }
+        input, select, textarea { box-sizing: border-box; display: block; width: 100%; margin-top: .3rem; border: 1px solid #aebdc6; border-radius: .3rem; padding: .6rem; font: inherit; }
+        textarea { min-height: 5rem; resize: vertical; }
+        .actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .8rem; }
+        .message { padding: .75rem; border-radius: .35rem; margin: .5rem 0 1rem; }
+        .message.error { background: #fff0ef; color: #842b25; }
+        .message.success { background: #eaf7ef; color: #225f39; }
+        .message.info { background: #eaf3f8; color: #254e64; }
+        .muted { color: #526b7a; }
+        .warning { border-left: 4px solid #c58b18; padding: .7rem; background: #fff8e8; }
+        dl { display: grid; grid-template-columns: max-content 1fr; gap: .3rem .8rem; }
+        dt { font-weight: 600; }
+        dd { margin: 0; overflow-wrap: anywhere; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border-bottom: 1px solid #d9e2e8; text-align: left; padding: .55rem; vertical-align: top; }
+        .table-wrap { overflow-x: auto; }
+        @media (max-width: 600px) { nav, main { padding: .75rem; } }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Faculty &amp; Verification Portal</h1>
+        <p>Claim review, item search, and return records</p>
+    </header>
+    <nav aria-label="Faculty sections">
+        <button type="button" data-show="dashboard">Pending claims</button>
+        <button type="button" data-show="search">Smart search</button>
+        <button type="button" data-show="return">Record return</button>
+        <button type="button" data-show="history">Return history</button>
+    </nav>
+    <main>
+        <section id="dashboard" class="panel">
+            <h2>Pending claims</h2>
+            <div id="decision-state" class="message success" role="status" hidden></div>
+            <div id="claims-state" class="message info" role="status">Loading pending claims…</div>
+            <div id="claims-list"></div>
+        </section>
+
+        <section id="search" class="panel" hidden>
+            <h2>Smart item search</h2>
+            <form id="search-form">
+                <div class="grid">
+                    <label>Keywords in title
+                        <input name="q" maxlength="100" type="search">
+                    </label>
+                    <label>Category
+                        <select name="category_id"><option value="">All categories</option></select>
+                    </label>
+                    <label>Location
+                        <select name="location_id"><option value="">All locations</option></select>
+                    </label>
+                    <label>Status
+                        <select name="status">
+                            <option value="">All statuses</option>
+                            <option>Available</option><option>Claimed</option>
+                            <option>Returned</option><option>Archived</option>
+                        </select>
+                    </label>
+                    <label>Item type
+                        <select name="item_type">
+                            <option value="">All types</option>
+                            <option>Lost</option><option>Found</option>
+                        </select>
+                    </label>
+                    <label>Reported from
+                        <input name="date_from" type="date">
+                    </label>
+                    <label>Reported through
+                        <input name="date_to" type="date">
+                    </label>
+                </div>
+                <div class="actions"><button type="submit">Search items</button></div>
+            </form>
+            <div id="search-state" class="message info" role="status" hidden></div>
+            <div id="search-results"></div>
+            <div id="item-detail"></div>
+        </section>
+
+        <section id="return" class="panel" hidden>
+            <h2>Record an item return</h2>
+            <p class="warning">Enter the receiver's details as collected during the handover. This form does not independently verify the receiver's identity or academic programme.</p>
+            <div id="return-state" class="message info" role="status" hidden></div>
+            <form id="return-form">
+                <div class="grid">
+                    <label>Approved claim ID
+                        <input name="claim_id" type="number" min="1" step="1" required>
+                    </label>
+                    <label>Receiver registration number
+                        <input name="claimant_registration_no" maxlength="30" required>
+                    </label>
+                    <label>Receiver phone
+                        <input name="claimant_phone" maxlength="15" required>
+                    </label>
+                    <label>Academic programme
+                        <input name="claimant_programme" maxlength="100" required>
+                    </label>
+                </div>
+                <label>Verification notes (optional)
+                    <textarea name="verification_notes" maxlength="10000"></textarea>
+                </label>
+                <div class="actions"><button type="submit">Record return</button></div>
+            </form>
+        </section>
+
+        <section id="history" class="panel" hidden>
+            <h2>Return history</h2>
+            <div id="history-state" class="message info" role="status">Loading return history…</div>
+            <div id="history-results"></div>
+        </section>
+    </main>
+    <script>
+        const panels = document.querySelectorAll("[data-show]");
+        const sectionNames = ["dashboard", "search", "return", "history"];
+        const esc = value => String(value ?? "").replace(/[&<>"']/g, character => ({
+            "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+        })[character]);
+        const showMessage = (element, text, kind = "info") => {
+            element.textContent = text;
+            element.className = `message ${kind}`;
+            element.hidden = false;
+        };
+        const api = async (url, options = {}) => {
+            const response = await fetch(url, options);
+            const body = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(body.message || `Request failed (${response.status}).`);
+            return body;
+        };
+
+        panels.forEach(button => button.addEventListener("click", () => {
+            sectionNames.forEach(name => {
+                document.getElementById(name).hidden = name !== button.dataset.show;
+            });
+            if (button.dataset.show === "history") loadHistory();
+            if (button.dataset.show === "dashboard") loadClaims();
+        }));
+
+        async function loadClaims() {
+            const state = document.getElementById("claims-state");
+            const list = document.getElementById("claims-list");
+            list.replaceChildren();
+            showMessage(state, "Loading pending claims…");
+            try {
+                const result = await api("/api/faculty/claims/pending");
+                if (!result.claims.length) {
+                    showMessage(state, "There are no pending claims.", "info");
+                    return true;
+                }
+                state.hidden = true;
+                list.innerHTML = result.claims.map(claim => {
+                    const item = claim.items || {};
+                    const claimant = Array.isArray(claim.claimant) ? claim.claimant[0] : claim.claimant;
+                    const category = item.categories?.category_name;
+                    const location = item.locations?.location_name;
+                    return `<article class="card">
+                        <h3>Claim #${esc(claim.claim_id)} — ${esc(item.title || "Item details unavailable")}</h3>
+                        <dl>
+                            <dt>Item status</dt><dd>${esc(item.status || "Unknown")}</dd>
+                            <dt>Type</dt><dd>${esc(item.item_type || "—")}</dd>
+                            <dt>Category / location</dt><dd>${esc(category || "—")} / ${esc(location || "—")}</dd>
+                            <dt>Claimant</dt><dd>${esc(claimant?.full_name || "—")} (${esc(claimant?.registration_no || "—")})</dd>
+                            <dt>Profile department</dt><dd>${esc(claimant?.department || "—")}</dd>
+                            <dt>Ownership proof</dt><dd>${esc(claim.proof_description || "—")}</dd>
+                            <dt>Submitted</dt><dd>${esc(claim.created_at || "—")}</dd>
+                        </dl>
+                        <label>Review remarks (optional)
+                            <textarea data-remarks="${esc(claim.claim_id)}" maxlength="10000"></textarea>
+                        </label>
+                        <div class="actions">
+                            <button data-decision="Approved" data-claim="${esc(claim.claim_id)}">Approve</button>
+                            <button class="danger" data-decision="Rejected" data-claim="${esc(claim.claim_id)}">Reject</button>
+                        </div>
+                    </article>`;
+                }).join("");
+                list.querySelectorAll("[data-decision]").forEach(button => {
+                    button.addEventListener("click", () => decideClaim(button));
+                });
+                return true;
+            } catch (error) {
+                showMessage(state, error.message, "error");
+                return false;
+            }
+        }
+
+        async function decideClaim(button) {
+            const card = button.closest(".card");
+            const controls = card.querySelectorAll("button");
+            controls.forEach(control => control.disabled = true);
+            document.getElementById("decision-state").hidden = true;
+            showMessage(document.getElementById("claims-state"), "Saving claim decision…");
+            try {
+                await api(`/api/faculty/claims/${encodeURIComponent(button.dataset.claim)}/decision`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        decision: button.dataset.decision,
+                        review_remarks: card.querySelector("textarea").value
+                    })
+                });
+                const refreshed = await loadClaims();
+                showMessage(
+                    document.getElementById("decision-state"),
+                    refreshed
+                        ? "Claim decision saved. Pending claims refreshed."
+                        : "Claim decision saved, but pending claims could not be refreshed.",
+                    refreshed ? "success" : "error"
+                );
+            } catch (error) {
+                controls.forEach(control => control.disabled = false);
+                showMessage(document.getElementById("claims-state"), error.message, "error");
+            }
+        }
+
+        async function loadSearchOptions() {
+            try {
+                const result = await api("/api/faculty/search-options");
+                for (const [name, rows, idKey, labelKey] of [
+                    ["category_id", result.categories, "category_id", "category_name"],
+                    ["location_id", result.locations, "location_id", "location_name"]
+                ]) {
+                    const select = document.querySelector(`[name="${name}"]`);
+                    rows.forEach(row => select.add(new Option(row[labelKey], row[idKey])));
+                }
+            } catch (error) {
+                showMessage(document.getElementById("search-state"), error.message, "error");
+            }
+        }
+
+        document.getElementById("search-form").addEventListener("submit", async event => {
+            event.preventDefault();
+            const state = document.getElementById("search-state");
+            const results = document.getElementById("search-results");
+            const detail = document.getElementById("item-detail");
+            results.replaceChildren();
+            detail.replaceChildren();
+            showMessage(state, "Searching items…");
+            try {
+                const params = new URLSearchParams(new FormData(event.currentTarget));
+                const result = await api(`/api/faculty/items?${params}`);
+                if (!result.items.length) {
+                    showMessage(state, "No items matched these filters.", "info");
+                    return;
+                }
+                state.hidden = true;
+                results.innerHTML = result.items.map(item => `<article class="card">
+                    <h3>${esc(item.title)}</h3>
+                    <p>${esc(item.item_type)} · ${esc(item.status)} · ${esc(item.categories?.category_name || "—")} · ${esc(item.locations?.location_name || "—")}</p>
+                    <p>${esc(item.description || "")}</p>
+                    <button data-item="${esc(item.item_id)}">View item details</button>
+                </article>`).join("");
+                results.querySelectorAll("[data-item]").forEach(button => {
+                    button.addEventListener("click", () => loadItemDetails(button.dataset.item));
+                });
+            } catch (error) {
+                showMessage(state, error.message, "error");
+            }
+        });
+
+        async function loadItemDetails(itemId) {
+            const detail = document.getElementById("item-detail");
+            detail.innerHTML = '<div class="message info">Loading item details…</div>';
+            try {
+                const result = await api(`/api/faculty/items/${encodeURIComponent(itemId)}`);
+                const item = result.item;
+                const approvedClaims = result.approved_claims.length
+                    ? result.approved_claims.map(claim => {
+                        const claimant = Array.isArray(claim.claimant) ? claim.claimant[0] : claim.claimant;
+                        return `<li>Claim #${esc(claim.claim_id)} — ${esc(claimant?.full_name || "Claimant")}: ${esc(claim.proof_description || "No proof description")} <button data-use-claim="${esc(claim.claim_id)}">Use for return</button></li>`;
+                    }).join("")
+                    : "<li>No approved claims are associated with this item.</li>";
+                const images = (item.item_images || []).filter(image => /^https:\/\//i.test(image.image_url || ""))
+                    .map(image => `<img src="${esc(image.image_url)}" alt="Item photo" style="max-width:140px;max-height:140px;margin:.3rem">`).join("");
+                detail.innerHTML = `<article class="card">
+                    <h3>Item #${esc(item.item_id)}: ${esc(item.title)}</h3>
+                    <p>${esc(item.description)}</p>
+                    <p>${esc(item.item_type)} · ${esc(item.status)} · ${esc(item.categories?.category_name || "—")} · ${esc(item.locations?.location_name || "—")}</p>
+                    <p>Reported: ${esc(item.date_reported || "—")}</p>${images}
+                    <h4>Approved claims</h4><ul>${approvedClaims}</ul>
+                </article>`;
+                detail.querySelectorAll("[data-use-claim]").forEach(button => {
+                    button.addEventListener("click", () => {
+                        document.querySelector('[name="claim_id"]').value = button.dataset.useClaim;
+                        sectionNames.forEach(name => document.getElementById(name).hidden = name !== "return");
+                        document.querySelector('[name="claimant_registration_no"]').focus();
+                    });
+                });
+            } catch (error) {
+                detail.innerHTML = `<div class="message error">${esc(error.message)}</div>`;
+            }
+        }
+
+        let returnSubmitting = false;
+        document.getElementById("return-form").addEventListener("submit", async event => {
+            event.preventDefault();
+            if (returnSubmitting) return;
+            const form = event.currentTarget;
+            const button = form.querySelector('button[type="submit"]');
+            const state = document.getElementById("return-state");
+            const data = new FormData(form);
+            const payload = Object.fromEntries(data.entries());
+            payload.claim_id = Number(payload.claim_id);
+            payload.verification_notes = payload.verification_notes || null;
+            returnSubmitting = true;
+            button.disabled = true;
+            showMessage(state, "Recording return…");
+            try {
+                await api("/api/faculty/returns", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                showMessage(state, "Return recorded successfully. The entered receiver details are stored as provided.", "success");
+                loadHistory();
+            } catch (error) {
+                showMessage(state, error.message, "error");
+            } finally {
+                returnSubmitting = false;
+                button.disabled = false;
+            }
+        });
+
+        async function loadHistory() {
+            const state = document.getElementById("history-state");
+            const results = document.getElementById("history-results");
+            results.replaceChildren();
+            showMessage(state, "Loading return history…");
+            try {
+                const result = await api("/api/faculty/returns");
+                if (!result.returns.length) {
+                    showMessage(state, "No return records are available.", "info");
+                    return;
+                }
+                state.hidden = true;
+                results.innerHTML = `<div class="table-wrap"><table>
+                    <thead><tr><th>Date</th><th>Item</th><th>Claim</th><th>Receiver registration</th><th>Phone</th><th>Verifier ID</th><th>Notes</th></tr></thead>
+                    <tbody>${result.returns.map(record => `<tr>
+                        <td>${esc(record.return_date)}</td>
+                        <td><button class="secondary" data-history-item="${esc(record.item_id)}">#${esc(record.item_id)}</button></td>
+                        <td>${esc(record.claim_id)}</td><td>${esc(record.claimant_registration_no)}</td>
+                        <td>${esc(record.claimant_phone)}</td><td>${esc(record.verified_by_faculty_id)}</td>
+                        <td>${esc(record.verification_notes || "—")}</td>
+                    </tr>`).join("")}</tbody></table></div>`;
+                results.querySelectorAll("[data-history-item]").forEach(button => {
+                    button.addEventListener("click", () => {
+                        sectionNames.forEach(name => document.getElementById(name).hidden = name !== "search");
+                        loadItemDetails(button.dataset.historyItem);
+                    });
+                });
+            } catch (error) {
+                showMessage(state, error.message, "error");
+            }
+        }
+
+        loadClaims();
+        loadSearchOptions();
+        loadHistory();
+    </script>
+</body>
+</html>

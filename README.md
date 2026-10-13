@@ -29,7 +29,16 @@ Managing lost property on campus often relies on disorganized bulletin boards or
 * Multi-parameter Smart Search (filter by category, location, status, and date).
 * Item detail views with claim review queues.
 * Faculty claim approval and rejection workflows.
-* Formal return logging capturing receiver identification (Registration No, Phone, Department).
+* Formal return logging capturing receiver registration number, phone, academic programme, and optional notes.
+
+The Faculty/Admin portal is available at `/api/faculty/portal` after login. It
+uses the existing Flask session and Faculty/Admin role guard for its pages and
+data endpoints. Receiver details are entered at handover and are not
+independently verified by the form; the source and verification policy for
+academic programme still require team confirmation. Return recording depends
+on approval and deployment of the separate database migration and its
+least-privilege RPC permission decision. Competing claims are not automatically
+changed when an item is returned.
 
 ### 4. Admin, Analytics & Reporting Module
 * Administrative control panel for user and category management.
@@ -74,8 +83,9 @@ The system utilizes an 11-table relational schema designed in 3NF:
 
 ### 2. Clone the Repository
 ```bash
-git clone [https://github.com/AdrikaJaiswal/LostAndFound.git](https://github.com/AdrikaJaiswal/LostAndFound.git)
-cd LostAndFound```
+git clone https://github.com/AdrikaJaiswal/LostAndFound.git
+cd LostAndFound
+```
 
 ### 3. Install Dependencies
 ```bash
@@ -92,9 +102,27 @@ SECRET_KEY="your-flask-secret-key"
 
 ### 5. Run the Application
 ```bash
-python app.py
+py -3 app.py
 ```
-Open http://127.0.0.1:5000 in your browser.
+Open http://127.0.0.1:5000. After signing in with a Faculty or Admin account,
+open http://127.0.0.1:5000/api/faculty/portal for claim review, smart search,
+return recording, and return history.
+
+### 6. Run the Tests
+```bash
+py -3 -m unittest discover -s tests -v
+```
+
+The Faculty route tests mock Supabase and do not validate database permissions
+or PostgreSQL behavior. The return workflow migration in
+`database/migrations/20261013_001_record_item_return.sql` is a draft only.
+Before enabling return recording, review the permission and credential
+decisions in `database/migrations/README.md` and test the migration against a
+disposable local Supabase/PostgreSQL instance. Do not use a shared database
+for the initial integration test. The portal records receiver details as
+entered; claimant identity and academic programme provenance have not been
+independently verified. Other claims are not automatically changed after a
+return.
 
 ---
 
