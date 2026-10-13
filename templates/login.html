@@ -1,4 +1,7 @@
+feature/student-public-module
 <!DOCTYPE html>
+<!DOCTYPE html>
+main
 <html lang="en">
 
 <head>
@@ -67,7 +70,11 @@
                             <div class="text-center mb-4">
 
                                 <div class="display-5 mb-3">
+ feature/student-public-module
                                     🔐
+
+                                    ≡ƒöÉ
+main
                                 </div>
 
                                 <h2 class="fw-bold">
@@ -278,11 +285,34 @@
                      */
 
                     setTimeout(function() {
+feature/student-public-module
 
                         window.location.href = "/student/dashboard";
 
                     }, 1000);
 
+                        
+if (response.ok && data.status === "Success") {
+    successMessage.textContent = "Login successful! Redirecting...";
+    successMessage.style.display = "block";
+
+    const role = data.user?.role || data.role;
+
+    setTimeout(function() {
+        if (role === "Admin") {
+            window.location.replace("/admin/dashboard");
+        } else {
+            window.location.replace("/");
+        }
+    }, 500);
+} else {
+    errorMessage.textContent =
+        data.message || "Login failed. Please try again.";
+    errorMessage.style.display = "block";
+}
+
+                    }, 1000);
+ main
                 }
 
                 else {
@@ -323,5 +353,8 @@
 
 
 </body>
+feature/student-public-module
+</html>
 
 </html>
+main
