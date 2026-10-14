@@ -47,9 +47,9 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        Search Items
-                    </a>
+                    <a class="nav-link" href="{{ url_for('browse_items') }}">
+    Search Items
+</a>
                 </li>
 
                 <li class="nav-item">
@@ -60,15 +60,17 @@
 
 
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        Notifications
-                    </a>
+                    <a href="{{ url_for('student_notifications') }}">
+    Notifications
+</a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        Profile
-                    </a>
+                    
+<a class="nav-link" href="{{ url_for('student_profile') }}">
+    Profile
+</a>
+
                 </li>
 
                 <li class="nav-item">
@@ -127,9 +129,9 @@
                         View the lost and found items you have uploaded.
                     </p>
 
-                    <a href="#" class="btn btn-primary">
-                        View Uploads
-                    </a>
+                    <a href="{{ url_for('my_uploads') }}" class="btn btn-primary">
+    View Uploads
+</a>
 
                 </div>
 
@@ -137,6 +139,37 @@
 
         </div>
 
+        
+        <!-- Browse Found Items -->
+        <div class="col-md-4">
+
+            <div class="card h-100 shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <div class="fs-1 mb-3">
+                        🔍
+                    </div>
+
+                    <h5 class="card-title">
+                        Browse Found Items
+                    </h5>
+
+                    <p class="card-text text-muted">
+                        Search items reported by other students
+                        and claim belongings that are yours.
+                    </p>
+
+                    <a href="{{ url_for('browse_items') }}"
+                       class="btn btn-primary">
+                        Browse Items
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
 
         <!-- My Claims -->
 
@@ -158,9 +191,11 @@
                         Track the status of items you have claimed.
                     </p>
 
-                    <a href="#" class="btn btn-primary">
-                        View Claims
-                    </a>
+                    
+<a href="{{ url_for('my_claims') }}" class="btn btn-primary">
+    View Claims
+</a>
+
 
                 </div>
 
@@ -215,9 +250,9 @@
             <a href="/student/upload" class="btn btn-success">
                 ➕ Upload Lost / Found Item
             </a>
-            <a href="#" class="btn btn-outline-primary">
-                🔍 Search Items
-            </a>
+            <a href="{{ url_for('browse_items') }}" class="btn btn-outline-primary">
+    🔍 Search Items
+</a>
 
         </div>
 
@@ -234,9 +269,9 @@
                 Recent Items
             </h3>
 
-            <a href="#" class="text-decoration-none">
-                View All
-            </a>
+            <a href="{{ url_for('browse_items') }}" class="text-decoration-none">
+    View All
+</a>
 
         </div>
 

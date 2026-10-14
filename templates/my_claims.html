@@ -1,0 +1,92 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Claims | Lost & Found</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="/student/dashboard">Lost & Found</a>
+        <a class="btn btn-light btn-sm" href="/student/dashboard">
+            Dashboard
+        </a>
+    </div>
+</nav>
+
+<main class="container py-5">
+    <h1 class="h3">My Claims</h1>
+    <p class="text-muted mb-4">
+        Track the claims you have submitted.
+    </p>
+
+    {% if claims %}
+        <div class="row g-4">
+            {% for claim in claims %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h2 class="h5">
+                                {% if claim.item %}
+                                    {{ claim.item.title }}
+                                {% else %}
+                                    Item #{{ claim.item_id }}
+                                {% endif %}
+                            </h2>
+
+                            <p>
+                                <strong>Claim ID:</strong>
+                                {{ claim.claim_id }}
+                            </p>
+
+                            <p>
+                                <strong>Type:</strong>
+                                {{ claim.item.item_type if claim.item else "Unknown" }}
+                            </p>
+
+                            <p>
+                                <strong>Status:</strong>
+                                <span class="badge bg-info text-dark">
+                                    {{ claim.claim_status or "Pending" }}
+                                </span>
+                            </p>
+
+                            <p>
+                                <strong>Proof submitted:</strong><br>
+                                {{ claim.proof_description or "No proof provided." }}
+                            </p>
+
+                            {% if claim.review_remarks %}
+                                <p>
+                                    <strong>Faculty remarks:</strong><br>
+                                    {{ claim.review_remarks }}
+                                </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card shadow-sm border-0">
+            <div class="card-body text-center py-5">
+                <div class="display-4">📋</div>
+                <h2 class="h5 mt-3">No claims yet</h2>
+                <p class="text-muted">
+                    Your submitted claims will appear here.
+                </p>
+                <a href="/student/dashboard" class="btn btn-primary">
+                    Back to Dashboard
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</main>
+
+</body>
+</html>

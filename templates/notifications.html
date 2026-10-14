@@ -1,0 +1,66 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Notifications | Lost & Found</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <div class="container py-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>My Notifications</h2>
+            <a href="{{ url_for('student_dashboard') }}"
+               class="btn btn-outline-secondary">
+                Back to Dashboard
+            </a>
+        </div>
+
+        {% if notifications %}
+            {% for notification in notifications %}
+                <div class="card shadow-sm mb-3
+                    {% if not notification.is_read %}border-primary{% endif %}">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between gap-3">
+                            <h5 class="card-title">
+                                {{ notification.title }}
+                            </h5>
+
+                            {% if not notification.is_read %}
+                                <span class="badge bg-primary align-self-start">
+                                    New
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary align-self-start">
+                                    Read
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        <p class="card-text">
+                            {{ notification.message }}
+                        </p>
+
+                        <small class="text-muted">
+                            {{ notification.created_at }}
+                        </small>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="card shadow-sm">
+                <div class="card-body text-center py-5">
+                    <h5>No notifications yet</h5>
+                    <p class="text-muted mb-0">
+                        Updates about your claims will appear here.
+                    </p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>
